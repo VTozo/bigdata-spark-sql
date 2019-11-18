@@ -1,16 +1,14 @@
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-import static org.apache.spark.sql.functions.*;
-
 class Join {
 
     static Dataset<Row> joinTables() {
-        // Sets ERROR-only logging
+
+        // Imprime apenas prints e erros
         Logger.getLogger("org").setLevel(Level.ERROR);
 
         // inicializando sessao com n threads
@@ -52,6 +50,7 @@ class Join {
                 csv("in/ommlbd_renda.csv").
                 as("tb_renda");
 
+        // Criando a tabela a partir da junção de todos os datasets
         Dataset<Row> joined = basico.
                 join(empresarial, basico.col("HS_CPF").equalTo(
                         empresarial.col("HS_CPF")), "inner").
@@ -62,14 +61,6 @@ class Join {
                 join(renda, basico.col("HS_CPF").equalTo(
                         renda.col("HS_CPF")), "inner");
 
-//
-//        // Olhando as primeiras 10 linhas
-//        joined.printSchema();
-//        joined.agg(avg("ESTIMATIVARENDA")).show();
-//
-//
-//        // parando a sessão ***Talvez de merda
-//        session.stop();
         return joined;
 
     }
